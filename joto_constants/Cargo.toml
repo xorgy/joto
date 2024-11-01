@@ -1,0 +1,8 @@
+[package]
+name = "joto_constants"
+version = "0.1.1"
+description = "Constants for interoperation between US Customary and SI units."
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true

@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "joto",
+    "joto_constants",
+]
+
+[workspace.package]
+edition = "2021"
+license = "ISC OR Apache-2.0 OR MIT"
+repository = "https://github.com/xorgy/joto"
+rust-version = "1.56"
+
+[workspace.dependencies]
+joto_constants = { version = "0.1.1", default-features = false, path = "joto_constants" }
