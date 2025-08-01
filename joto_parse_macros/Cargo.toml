@@ -1,0 +1,16 @@
+[package]
+name = "joto_parse_macros"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version = "1.79"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+joto_parse.workspace = true
+
+[dev-dependencies]
+joto_constants.workspace = true

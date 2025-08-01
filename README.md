@@ -20,7 +20,7 @@ Using this base unit, combinations of lengths in either [US customary units](<ht
 
 ## Minimum Supported Rust Version (MSRV)
 
-These packages have been verified to compile with **Rust 1.64** and later.
+MSRVs differ between individual packages in this workspace, but all of them are known to compile with **Rust 1.79** and later.
 
 Future versions might increase the Rust version requirement.
 It will not be treated as a breaking change, and as such can even happen with small patch releases.

@@ -3,13 +3,20 @@ resolver = "2"
 members = [
     "joto",
     "joto_constants",
+    "joto_parse",
+    "joto_parse_macros",
 ]
 
 [workspace.package]
 edition = "2021"
 license = "ISC OR Apache-2.0 OR MIT"
 repository = "https://github.com/xorgy/joto"
-rust-version = "1.56"
+rust-version = "1.79"
 
 [workspace.dependencies]
 joto_constants = { version = "0.1.1", default-features = false, path = "joto_constants" }
+joto_parse = { version = "0.1.0", default-features = false, path = "joto_parse" }
+joto_parse_macros = { version = "0.1.0", default-features = false, path = "joto_parse_macros" }
+
+[profile.bench]
+codegen-units = 1
