@@ -3,15 +3,15 @@ env:
   # version like 1.70. Note that we only specify MAJOR.MINOR and not PATCH so that bugfixes still
   # come automatically. If the version specified here is no longer the latest stable version,
   # then please feel free to submit a PR that adjusts it along with the potential clippy fixes.
-  RUST_STABLE_VER: "1.82" # In quotes because otherwise (e.g.) 1.70 would be interpreted as 1.7
+  RUST_STABLE_VER: "1.89" # In quotes because otherwise (e.g.) 1.70 would be interpreted as 1.7
   # The purpose of checking with the minimum supported Rust toolchain is to detect its staleness.
   # If the compilation fails, then the version specified here needs to be bumped up to reality.
   # Be sure to also update the rust-version property in the workspace Cargo.toml file,
   # plus all the README.md files of the affected packages.
-  RUST_MIN_VER: "1.64"
+  RUST_MIN_VER: "1.79"
   # List of packages that will be checked with the minimum supported Rust version.
   # This should be limited to packages that are intended for publishing.
-  RUST_MIN_VER_PKGS: "-p joto -p joto_constants"
+  RUST_MIN_VER_PKGS: "-p joto -p joto_constants -p joto_parse -p joto_parse_macros"
 
 
 # Rationale
@@ -138,7 +138,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, windows-11-arm, macos-latest, ubuntu-latest, ubuntu-24.04-arm]
     steps:
       - uses: actions/checkout@v4
 
@@ -175,6 +175,32 @@ jobs:
       # TODO: Find a way to make tests work. Until then the tests are merely compiled.
       - name: cargo test compile
         run: cargo test --workspace --locked --target wasm32-unknown-unknown --all-features --no-run
+
+  # This is here because `joto_constants` is meant to support older rust toolchains.
+  check-msrv-constants:
+    name: cargo check (msrv) joto_constants
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: restore cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.event_name != 'merge_group' }}
+
+      - name: install (joto_constants) msrv toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.64" # Keep this up to date with the rust-version on `joto_constants`.
+          targets: x86_64-unknown-none
+
+      - name: install cargo-hack
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
+
+      - name: cargo check
+        run: cargo hack check -p joto_constants --locked --optional-deps --each-feature  --target x86_64-unknown-none
 
   check-msrv:
     name: cargo check (msrv)
@@ -228,6 +254,32 @@ jobs:
 
       - name: cargo check
         run: cargo hack check ${{ env.RUST_MIN_VER_PKGS }} --locked --target wasm32-unknown-unknown --optional-deps --each-feature
+
+  quick-bench-joto-parse:
+    name: joto_parse quick bench
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: restore cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.event_name != 'merge_group' }}
+
+      - name: install nightly toolchain
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: cargo bench (joto_parse)
+        env:
+          DIVAN_MIN_TIME: 1.5
+          DIVAN_SKIP_EXT_TIME: true
+          DIVAN_BYTES_FORMAT: binary
+          RUSTFLAGS: "-C opt-level=s -C target-cpu=native -C embed-bitcode=yes -C lto=fat -Zdylib-lto"
+        run: cargo bench -p joto_parse --bench parse_bench
+
 
   doc:
     name: cargo doc
