@@ -1,10 +1,25 @@
 [package]
 name = "joto_parse"
 version = "0.1.0"
+description = "Fast, const-safe parser for SI, US Customary, and typesetting dimensions with exact representation."
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version = "1.79"
+categories = [
+    "no-std",
+    "no-std::no-alloc",
+    "parser-implementations",
+    "science",
+    "text-processing",
+]
+keywords = [
+    "dimension",
+    "measurement",
+    "no_alloc",
+    "no_std",
+    "units",
+]
 
 [dependencies]
 joto_constants.workspace = true
