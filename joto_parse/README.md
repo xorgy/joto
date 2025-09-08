@@ -22,7 +22,7 @@ Using this base unit, combinations of lengths in either [US customary units](<ht
 
 ### Basic usage
 ```rust
-use joto_constants::u64::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
+use joto_constants::length::u64::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
 use joto_parse::u64::parse_dim;
 
 assert_eq!(parse_dim("2.5cm").unwrap(), 25 * MILLIMETER);
@@ -50,7 +50,7 @@ The parsing functions are all `const`, so can be used for compile-time constants
 
 ```rust
 use joto_parse::u128::parse_dim;
-use joto_constants::u128::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
+use joto_constants::length::u128::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
 
 const DIAMETER: u128 = parse_dim("21ft11﻿17⁄32in").unwrap();
 assert_eq!(DIAMETER / 2, 10 * FOOT + 11 * INCH + 49 * SIXTY_FOURTH);

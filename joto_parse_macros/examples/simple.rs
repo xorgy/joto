@@ -1,8 +1,8 @@
 // Copyright 2025 the Joto Authors
 // SPDX-License-Identifier: ISC OR Apache-2.0 OR MIT
 
-use joto_constants::i64::NANOMETER;
-use joto_constants::u64::MICROMETER;
+use joto_constants::length::i64::NANOMETER;
+use joto_constants::length::u64::MICROMETER;
 use joto_parse_macros::dim;
 
 fn main() {
