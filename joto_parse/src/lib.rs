@@ -23,7 +23,7 @@
 //!
 //! ### Basic usage
 //! ```
-//! use joto_constants::u64::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
+//! use joto_constants::length::u64::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
 //! use joto_parse::u64::parse_dim;
 //!
 //! assert_eq!(parse_dim("2.5cm").unwrap(), 25 * MILLIMETER);
@@ -51,7 +51,7 @@
 //!
 //! ```
 //! use joto_parse::u128::parse_dim;
-//! use joto_constants::u128::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
+//! use joto_constants::length::u128::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
 //!
 //! const DIAMETER: u128 = parse_dim("21ft11﻿17⁄32in").unwrap();
 //! assert_eq!(DIAMETER / 2, 10 * FOOT + 11 * INCH + 49 * SIXTY_FOURTH);
@@ -68,12 +68,10 @@
 
 use core::str;
 
-use joto_constants::u64::{
-    CENTIMETER, FOOT, INCH, IOTA, METER, MICROMETER, MILLIMETER, NANOMETER, PICA, POINT, YARD,
+use joto_constants::length::u64::{
+    CENTIMETER, DECIMETER, FOOT, INCH, IOTA, METER, MICROMETER, MILLIMETER, NANOMETER, PICA, POINT,
+    QUARTER_MILLIMETER, YARD,
 };
-
-const DECIMETER: u64 = CENTIMETER * 10;
-const Q: u64 = MILLIMETER / 4;
 
 /// Unit type for parsing.
 ///
@@ -89,35 +87,35 @@ pub enum Unit {
     /// Using this base unit, combinations of lengths in either [US customary Units] or [SI units]
     /// can be added, subtracted, multiplied, and sometimes divided without loss of precision.
     ///
-    /// See [`IOTA`](joto_constants::u128::IOTA).
+    /// See [`IOTA`](joto_constants::length::u128::IOTA).
     ///
-    /// [`TEN_THOUSANDTH`]: joto_constants::u128::TEN_THOUSANDTH
-    /// [`POINT`]: joto_constants::u128::POINT
-    /// [`SIXTY_FOURTH`]: joto_constants::u128::SIXTY_FOURTH
-    /// [`NANOMETER`]: joto_constants::u128::NANOMETER
+    /// [`TEN_THOUSANDTH`]: joto_constants::length::u128::TEN_THOUSANDTH
+    /// [`POINT`]: joto_constants::length::u128::POINT
+    /// [`SIXTY_FOURTH`]: joto_constants::length::u128::SIXTY_FOURTH
+    /// [`NANOMETER`]: joto_constants::length::u128::NANOMETER
     ///
     /// [US customary Units]: <https://en.wikipedia.org/wiki/United_States_customary_units>
     /// [SI units]: <https://en.wikipedia.org/wiki/International_System_of_Units>
     Iota = IOTA,
     /// Inch ― exactly 1⁄12 of a [`Foot`](Unit::Foot).
     ///
-    /// See [`INCH`](joto_constants::u128::INCH) in [`joto_constants`].
+    /// See [`INCH`](joto_constants::length::u128::INCH) in [`joto_constants`].
     ///
-    /// [`FOOT`]: joto_constants::u128::FOOT
+    /// [`FOOT`]: joto_constants::length::u128::FOOT
     Inch = INCH,
     /// Foot ― exactly 1⁄3 of a [`Yard`](Unit::Yard).
     ///
-    /// See [`FOOT`](joto_constants::u128::FOOT) in [`joto_constants`].
+    /// See [`FOOT`](joto_constants::length::u128::FOOT) in [`joto_constants`].
     Foot = FOOT,
     /// Yard ― defined in the [International Yard and Pound agreement].
     ///
-    /// See [`YARD`](joto_constants::u128::YARD) in [`joto_constants`].
+    /// See [`YARD`](joto_constants::length::u128::YARD) in [`joto_constants`].
     ///
     /// [International Yard and Pound agreement]: <https://en.wikipedia.org/wiki/International_yard_and_pound>
     Yard = YARD,
     /// [Desktop publishing point] ― exactly 1⁄72 of an [`Inch`] or 1⁄12 of a [`Pica`].
     ///
-    /// See [`POINT`](joto_constants::u128::POINT) in [`joto_constants`].
+    /// See [`POINT`](joto_constants::length::u128::POINT) in [`joto_constants`].
     ///
     /// [`Inch`]: Unit::Inch
     /// [`Pica`]: Unit::Pica
@@ -125,41 +123,42 @@ pub enum Unit {
     Point = POINT,
     /// Desktop Publishing Pica ― exactly 1⁄6 of an [`Inch`] or 12 [`Point`].
     ///
-    /// See [`PICA`](joto_constants::u128::PICA) in [`joto_constants`].
+    /// See [`PICA`](joto_constants::length::u128::PICA) in [`joto_constants`].
     ///
     /// [`Inch`]: Unit::Inch
     /// [`Point`]: Unit::Point
     Pica = PICA,
     /// Nanometer.
     ///
-    /// See [`NANOMETER`](joto_constants::u128::NANOMETER) in [`joto_constants`].
+    /// See [`NANOMETER`](joto_constants::length::u128::NANOMETER) in [`joto_constants`].
     Nanometer = NANOMETER,
     /// Micrometer.
     ///
-    /// See [`MICROMETER`](joto_constants::u128::MICROMETER) in [`joto_constants`].
+    /// See [`MICROMETER`](joto_constants::length::u128::MICROMETER) in [`joto_constants`].
     Micrometer = MICROMETER,
     /// Millimeter.
     ///
-    /// See [`MILLIMETER`](joto_constants::u128::MILLIMETER) in [`joto_constants`].
+    /// See [`MILLIMETER`](joto_constants::length::u128::MILLIMETER) in [`joto_constants`].
     Millimeter = MILLIMETER,
     /// Centimeter.
     ///
-    /// See [`CENTIMETER`](joto_constants::u128::CENTIMETER) in [`joto_constants`].
+    /// See [`CENTIMETER`](joto_constants::length::u128::CENTIMETER) in [`joto_constants`].
     Centimeter = CENTIMETER,
     /// Decimeter.
     ///
-    /// See [`METER`](joto_constants::u128::METER) in [`joto_constants`].
+    /// See [`DECIMETER`](joto_constants::length::u128::DECIMETER) in [`joto_constants`].
     Decimeter = DECIMETER,
     /// Meter.
     ///
-    /// See [`METER`](joto_constants::u128::METER) in [`joto_constants`].
+    /// See [`METER`](joto_constants::length::u128::METER) in [`joto_constants`].
     Meter = METER,
     /// Q ― quarter-millimeter.
     ///
     /// This is a typesetting unit primarily used in Japan, equaling exactly 250 µm.
     ///
-    /// See [`MICROMETER`](joto_constants::u128::MICROMETER) in [`joto_constants`].
-    Q = Q,
+    /// See [`QUARTER_MILLIMETER`](joto_constants::length::u128::QUARTER_MILLIMETER) in
+    /// [`joto_constants`].
+    Q = QUARTER_MILLIMETER,
     //
     //    ATTENTION:
     //
@@ -941,13 +940,10 @@ mod tests {
 
                 type Target = $T;
 
-                use joto_constants::$T::{
-                    CENTIMETER, FOOT, INCH, METER, MICROMETER, MILLIMETER, NANOMETER, PICA, POINT,
-                    QUARTER, SIXTY_FOURTH, TEN_THOUSANDTH,
+                use joto_constants::length::$T::{
+                    CENTIMETER, DECIMETER, FOOT, HUNDRED_THOUSANDTH, INCH, METER, MICROMETER,
+                    MILLIMETER, NANOMETER, PICA, POINT, QUARTER, SIXTY_FOURTH,
                 };
-
-                const HUNDRED_THOUSANDTH: Target = TEN_THOUSANDTH / 10;
-                const DECIMETER: Target = CENTIMETER * 10;
 
                 /// Const panic wrapper for [`parse_dim`] for better feedback.
                 const fn p(s: &str) -> Target {
@@ -1305,7 +1301,7 @@ mod tests {
 
     mod f64 {
         use super::super::f64::parse_dim;
-        use joto_constants::f64::{QUARTER, SIXTY_FOURTH};
+        use joto_constants::length::f64::{QUARTER, SIXTY_FOURTH};
 
         #[test]
         fn parse_sanity() {
