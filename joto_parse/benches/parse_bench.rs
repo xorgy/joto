@@ -58,6 +58,31 @@ mod kinda_rough {
     bench_function!(S, i128);
 }
 
+macro_rules! bench_inch_function {
+    ( $S:expr, $T:ident ) => {
+        #[divan::bench]
+        fn $T(bencher: Bencher) {
+            bencher.with_inputs(|| $S.to_owned()).bench_refs(|s| {
+                use joto_parse::$T::parse_as;
+                parse_as(s.as_ref(), joto_parse::Unit::Inch).unwrap()
+            });
+        }
+    };
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+#[divan::bench_group(name = "Parse: \"176\" as Inch")]
+mod simple_as {
+    use super::*;
+
+    const S: &str = "176";
+
+    bench_inch_function!(S, u64);
+    bench_inch_function!(S, i64);
+    bench_inch_function!(S, u128);
+    bench_inch_function!(S, i128);
+}
+
 const EXAMPLES: [&str; 48] = [
     // Inches
     "3in",
