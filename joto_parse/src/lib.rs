@@ -873,10 +873,53 @@ macro_rules! typed_mod {
 
             /// Parse a dimension string, returning [`None`] if there is an error.
             ///
-            /// See [`parse_dim_diagnostic`] for information on how to handle errors.
+            /// Use [`parse_dim_diagnostic`] if you want to handle specific errors.
             #[inline]
             pub const fn parse_dim(s: &str) -> Option<Target> {
                 match parse_dim_diagnostic(s) {
+                    Ok(v) => Some(v),
+                    _ => None,
+                }
+            }
+
+            /// Parse a quantity for a known `unit`, returning a [`ParseError`] if parsing fails.
+            ///
+            /// This does not do compound unit parsing, it parses a single quantity for the given
+            /// [`Unit`] at the end of `s`.
+            #[inline]
+            pub const fn parse_as_diagnostic(s: &str, unit: Unit) -> Result<Target, ParseError> {
+                let rest = trim_end(s);
+                if rest.is_empty() {
+                    return Err(ParseError::EmptyQuantity { unit, at: 0 });
+                }
+                let (rest, acc) = match unit {
+                    Unit::Inch => match take_inch_frac(rest) {
+                        Ok((rest, v)) => (rest, v as Target),
+                        Err(e) => return Err(e),
+                    },
+                    _ => match unit.take_decimal_frac(rest) {
+                        Ok((rest, v)) if !rest.is_empty() => (rest, v as Target),
+                        Ok((_, v)) => {
+                            return Ok(v as Target);
+                        }
+                        Err(e) => {
+                            return Err(e);
+                        }
+                    },
+                };
+                match parse_whole_diagnostic(unit, acc, rest) {
+                    Ok((_, acc)) => Ok(acc),
+                    Err(ParseError::EmptyQuantity { .. }) if acc != 0 => Ok(acc),
+                    Err(e) => Err(e),
+                }
+            }
+
+            /// Parse a quantity for a known `unit`, returning [`None`] if there is an error.
+            ///
+            /// Use [`parse_as_diagnostic`] if you want to handle specific errors.
+            #[inline]
+            pub const fn parse_as(s: &str, unit: Unit) -> Option<Target> {
+                match parse_as_diagnostic(s, unit) {
                     Ok(v) => Some(v),
                     _ => None,
                 }
@@ -1287,6 +1330,46 @@ mod tests {
                         Err(ParseError::TooBig {
                             unit: Unit::Iota,
                             at: 1
+                        })
+                    );
+                }
+
+                #[test]
+                fn parse_as_sanity() {
+                    use crate::$T::parse_as;
+                    use crate::Unit::*;
+                    use joto_constants::length::$T as l;
+                    assert_eq!(parse_as("(unrelated) 1 ", Iota), Some(l::IOTA));
+                    assert_eq!(parse_as("(unrelated) 1 ", Inch), Some(l::INCH));
+                    assert_eq!(parse_as("(unrelated) 1 ", Foot), Some(l::FOOT));
+                    assert_eq!(parse_as("(unrelated) 1 ", Yard), Some(l::YARD));
+                    assert_eq!(parse_as("(unrelated) 1 ", Point), Some(l::POINT));
+                    assert_eq!(parse_as("(unrelated) 1 ", Pica), Some(l::PICA));
+                    assert_eq!(parse_as("(unrelated) 1 ", Nanometer), Some(l::NANOMETER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Micrometer), Some(l::MICROMETER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Millimeter), Some(l::MILLIMETER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Centimeter), Some(l::CENTIMETER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Decimeter), Some(l::DECIMETER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Meter), Some(l::METER));
+                    assert_eq!(parse_as("(unrelated) 1 ", Q), Some(l::QUARTER_MILLIMETER));
+
+                    assert_eq!(parse_as(".000000001", Meter), Some(l::NANOMETER));
+                    assert_eq!(parse_as(".001", Micrometer), Some(l::NANOMETER));
+                    assert_eq!(parse_as("3/8", Inch), Some(3 * (l::EIGHTH)));
+                    assert_eq!(parse_as("   ", Millimeter), None);
+                    assert_eq!(parse_as(".0001", Micrometer), None);
+                    assert_eq!(parse_as("foo37", Centimeter), Some(37 * l::CENTIMETER));
+                }
+
+                #[test]
+                fn parse_as_diagnostic_sanity() {
+                    use crate::$T::parse_as_diagnostic;
+                    use crate::Unit;
+                    assert_eq!(
+                        parse_as_diagnostic("   ", Unit::Millimeter),
+                        Err(ParseError::EmptyQuantity {
+                            unit: Unit::Millimeter,
+                            at: 0
                         })
                     );
                 }

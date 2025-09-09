@@ -1,6 +1,6 @@
 [package]
 name = "joto_parse"
-version = "0.1.0"
+version = "0.1.1"
 description = "Fast, const-safe parser for SI, US Customary, and typesetting dimensions with exact representation."
 edition.workspace = true
 license.workspace = true
