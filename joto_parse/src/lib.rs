@@ -274,6 +274,26 @@ impl Unit {
         }
     }
 
+    /// Canonical ASCII abbreviation for the unit.
+    pub const fn ascii_abbr(self) -> &'static [u8] {
+        use Unit::*;
+        match self {
+            Iota => b"io",
+            Foot => b"'",
+            Inch => b"\"",
+            Yard => b"yd",
+            Point => b"pt",
+            Pica => b"pc",
+            Nanometer => b"nm",
+            Micrometer => b"um",
+            Millimeter => b"mm",
+            Centimeter => b"cm",
+            Decimeter => b"dm",
+            Meter => b"m",
+            Q => b"Q",
+        }
+    }
+
     /// `true` if the unit is a standard SI unit ― i.e. not including [`Q`](Unit::Q).
     #[inline]
     pub const fn is_si(self) -> bool {
