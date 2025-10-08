@@ -112,8 +112,16 @@ name = "joto_constants"
 version = "0.2.0"
 
 [[package]]
+name = "joto_format"
+version = "0.1.0"
+dependencies = [
+ "joto_constants",
+ "joto_parse",
+]
+
+[[package]]
 name = "joto_parse"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "divan",
  "joto_constants",
