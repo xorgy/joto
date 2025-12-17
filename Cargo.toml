@@ -15,7 +15,7 @@ rust-version = "1.79"
 
 [workspace.dependencies]
 joto_constants = { version = "0.2.0", default-features = false, path = "joto_constants" }
-joto_parse = { version = "0.1.0", default-features = false, path = "joto_parse" }
+joto_parse = { version = "0.2.0", default-features = false, path = "joto_parse" }
 joto_parse_macros = { version = "0.1.0", default-features = false, path = "joto_parse_macros" }
 
 [profile.bench]
