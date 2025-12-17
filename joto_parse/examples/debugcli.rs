@@ -6,8 +6,8 @@
 use std::env;
 use std::error::Error;
 
-use joto_parse::i128::parse_dim;
-use joto_parse::{strip_unit, Unit};
+use joto_parse::length::i128::parse_dim;
+use joto_parse::length::{strip_unit, Unit};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut args: Vec<String> = env::args().skip(1).collect();

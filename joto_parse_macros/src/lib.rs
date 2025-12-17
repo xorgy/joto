@@ -1,8 +1,8 @@
 // Copyright 2025 the Joto Authors
 // SPDX-License-Identifier: ISC OR Apache-2.0 OR MIT
 
-use joto_parse::u128::parse_dim_diagnostic;
-use joto_parse::ParseError;
+use joto_parse::length::u128::parse_dim_diagnostic;
+use joto_parse::length::ParseError;
 use proc_macro::{Delimiter, Group, Ident, Literal, Punct, Spacing, Span, TokenStream, TokenTree};
 
 /// Parse a dimension into an integer literal.
