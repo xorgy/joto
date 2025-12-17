@@ -255,8 +255,8 @@ jobs:
       - name: cargo check
         run: cargo hack check ${{ env.RUST_MIN_VER_PKGS }} --locked --target wasm32-unknown-unknown --optional-deps --each-feature
 
-  quick-bench-joto-parse:
-    name: joto_parse quick bench
+  quick-bench:
+    name: quick benchmarks
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -279,6 +279,14 @@ jobs:
           DIVAN_BYTES_FORMAT: binary
           RUSTFLAGS: "-C opt-level=s -C target-cpu=native -C embed-bitcode=yes -C lto=fat -Zdylib-lto"
         run: cargo bench -p joto_parse --bench parse_bench
+
+      - name: cargo bench (joto_format)
+        env:
+          DIVAN_MIN_TIME: 1.5
+          DIVAN_SKIP_EXT_TIME: true
+          DIVAN_BYTES_FORMAT: binary
+          RUSTFLAGS: "-C opt-level=s -C target-cpu=native -C embed-bitcode=yes -C lto=fat -Zdylib-lto"
+        run: cargo bench -p joto_format --bench format_bench
 
 
   doc:
