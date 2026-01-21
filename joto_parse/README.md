@@ -23,7 +23,7 @@ Using this base unit, combinations of lengths in either [US customary units](<ht
 ### Basic usage
 ```rust
 use joto_constants::length::u64::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
-use joto_parse::u64::parse_dim;
+use joto_parse::length::u64::parse_dim;
 
 assert_eq!(parse_dim("2.5cm").unwrap(), 25 * MILLIMETER);
 assert_eq!(parse_dim("46'11﻿37⁄64\"").unwrap(), 46 * FOOT + 11 * INCH + 37 * SIXTY_FOURTH);
@@ -35,7 +35,7 @@ Invertibility is the primary attraction of iota as a base unit.
 You can add and subtract mixed units with iota, and by extension joto, without loss.
 
 ```rust
-use joto_parse::u128::parse_dim;
+use joto_parse::length::u128::parse_dim;
 
 fn p(s: impl AsRef<str>) -> u128 {
     parse_dim(s.as_ref()).unwrap()
@@ -49,7 +49,7 @@ assert_eq!(0, p("2.5cm") + p("1⁄64in") + p("0.500 in") - p("37,700μm") - p("1
 The parsing functions are all `const`, so can be used for compile-time constants and statics.
 
 ```rust
-use joto_parse::u128::parse_dim;
+use joto_parse::length::u128::parse_dim;
 use joto_constants::length::u128::{FOOT, INCH, MILLIMETER, SIXTY_FOURTH};
 
 const DIAMETER: u128 = parse_dim("21ft11﻿17⁄32in").unwrap();

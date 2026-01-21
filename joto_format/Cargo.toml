@@ -1,11 +1,25 @@
 [package]
 name = "joto_format"
 version = "0.1.0"
+description = "Fast, const-safe formatter for SI, US Customary, and typesetting dimensions with exactness tracking."
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version = "1.83"
-publish = false
+categories = [
+    "no-std",
+    "no-std::no-alloc",
+    "value-formatting",
+    "science",
+    "text-processing",
+]
+keywords = [
+    "dimension",
+    "measurement",
+    "no_alloc",
+    "no_std",
+    "units",
+]
 
 [dependencies]
 joto_constants.workspace = true
